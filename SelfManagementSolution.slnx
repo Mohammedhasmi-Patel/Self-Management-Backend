@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="SelfManagement.API/SelfManagement.API.csproj" />
+    <Project Path="SelfManagement.Application/SelfManagement.Application.csproj" />
+    <Project Path="SelfManagement.Domain/SelfManagement.Domain.csproj" />
+    <Project Path="SelfManagement.Infrastructure/SelfManagement.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/" />
+</Solution>
