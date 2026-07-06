@@ -1,8 +1,10 @@
-﻿
+
+
+using Microsoft.AspNetCore.Identity;
 
 namespace SelfManagement.Domain.Entities
 {
-    public class ApplicationUser 
+    public class ApplicationUser : IdentityUser<Guid>
     {
 
         public string? FirstName { get; set; }

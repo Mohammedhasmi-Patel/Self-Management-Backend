@@ -1,6 +1,4 @@
 ﻿
-using SelfManagement.Infrastructure.Entities;
-
 namespace SelfManagement.Domain.Entities
 {
     public class Company : BaseEntity

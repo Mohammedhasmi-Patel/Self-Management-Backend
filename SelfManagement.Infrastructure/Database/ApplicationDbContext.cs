@@ -5,7 +5,7 @@ using SelfManagement.Domain.Entities;
 
 namespace SelfManagement.Infrastructure.Database
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser,ApplicationRole,Guid>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
     {
         public DbSet<Category> Categories { get; set; }
         public DbSet<City> Cities { get; set; }

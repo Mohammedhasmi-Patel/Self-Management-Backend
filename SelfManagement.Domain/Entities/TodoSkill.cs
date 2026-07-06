@@ -4,6 +4,7 @@ namespace SelfManagement.Domain.Entities
 {
     public class TodoSkill : BaseEntity
     {
+        public Guid Id { get; set; }
         public Guid TodoId { get; set; }
 
         public Guid SkillId { get; set; }

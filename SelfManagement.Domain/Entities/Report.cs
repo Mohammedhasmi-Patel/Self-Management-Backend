@@ -2,6 +2,7 @@
 {
     public class Report : BaseEntity
     {
+        public Guid Id { get; set; }
         public string Slug { get; set; } = string.Empty;
 
         public Guid UserId { get; set; }
