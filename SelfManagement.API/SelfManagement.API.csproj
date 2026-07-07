@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
     <Folder Include="Exceptions\" />
   </ItemGroup>
 
@@ -27,5 +26,11 @@
   <ItemGroup>
     <ProjectReference Include="..\SelfManagement.Infrastructure\SelfManagement.Infrastructure.csproj" />
   </ItemGroup>
+	
+	<ItemGroup>
+		<None Update="EmailTemplates\OtpEmailTemplate.html">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 
 </Project>

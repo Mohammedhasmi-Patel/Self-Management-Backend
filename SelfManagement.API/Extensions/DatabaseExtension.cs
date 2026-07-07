@@ -11,7 +11,7 @@ namespace SelfManagement.API.Extensions
         {
             services.AddDbContext<ApplicationDbContext>(options =>
              options.UseNpgsql(
-                 configuration.GetConnectionString("DefaultConnection")));
+                 configuration.GetConnectionString("DefaultConnection")!));
 
             return services;
         }

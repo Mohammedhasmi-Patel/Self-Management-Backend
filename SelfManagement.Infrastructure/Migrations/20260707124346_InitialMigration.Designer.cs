@@ -12,8 +12,8 @@ using SelfManagement.Infrastructure.Database;
 namespace SelfManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260706200517_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260707124346_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
