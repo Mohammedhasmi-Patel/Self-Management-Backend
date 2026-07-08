@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SelfManagement.Domain\SelfManagement.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -1,5 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SelfManagement.API.Common;
+using SelfManagement.Application.ServiceInterface;
+using SelfManagement.Application.Services;
+using SelfManagement.Application.DTO.Common;
+using SelfManagement.Domain.Entities;
+using SelfManagement.Infrastructure.Database;
+using Microsoft.AspNetCore.Identity;
+
 
 namespace SelfManagement.API.Extensions
 {
@@ -22,6 +28,15 @@ namespace SelfManagement.API.Extensions
                 };
             });
             #endregion End here controller
+
+            services.AddIdentity<ApplicationUser,ApplicationRole>()
+             .AddEntityFrameworkStores<ApplicationDbContext>()
+             .AddDefaultTokenProviders();
+
+            services.AddScoped<IAuthService, AuthService>();
+
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen();
             return services;
         }
     }

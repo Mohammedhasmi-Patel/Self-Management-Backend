@@ -1,7 +1,8 @@
 ﻿
-namespace SelfManagement.API.Common
+
+namespace SelfManagement.Application.DTO.Common
 {
-    public  class ApiResponse<T>
+    public class ApiResponse<T>
     {
         public string Message { get; set; } = string.Empty;
         public T? Data { get; set; }

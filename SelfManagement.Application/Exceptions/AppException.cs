@@ -1,10 +1,16 @@
-﻿namespace SelfManagement.API.Extensions
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SelfManagement.Application.Exceptions
 {
     public class AppException : Exception
     {
         public int StatusCode { get; set; }
 
-        public AppException(string message , int statusCode) : base(message)
+        public AppException(string message, int statusCode) : base(message)
         {
             StatusCode = statusCode;
         }
@@ -29,9 +35,9 @@
 
         public class InternalServerError : AppException
         {
-            public InternalServerError(string message) : base(message,500)
+            public InternalServerError(string message) : base(message, 500)
             {
-                
+
             }
         }
     }

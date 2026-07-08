@@ -6,7 +6,6 @@ namespace SelfManagement.Domain.Entities
 {
     public class ApplicationUser : IdentityUser<Guid>
     {
-
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string FullName =>
@@ -20,7 +19,6 @@ namespace SelfManagement.Domain.Entities
         public DateTime? DeletedAt { get; set; }
         public bool IsDeleted { get; set; } = false;
 
-        public ICollection<UserOtp> Otps { get; set; } = [];
 
     }
 }

@@ -1,8 +1,8 @@
-﻿using SelfManagement.API.Common;
-using SelfManagement.API.Extensions;
+﻿using SelfManagement.API.Extensions;
 using System.Net;
 using System.Text.Json;
-
+using SelfManagement.Application.Exceptions;
+using SelfManagement.Application.DTO.Common;
 namespace SelfManagement.API.Middleware
 {
     public class GlobalExceptionMiddleware
