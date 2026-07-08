@@ -5,7 +5,7 @@ namespace SelfManagement.API.Extensions
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddDependencyInjection(this IServiceCollection services)
+        public static IServiceCollection AddDependencyInjection(this IServiceCollection services,IConfiguration configuration)
         {
             #region start controller here
             services.AddControllers().ConfigureApiBehaviorOptions(options =>
@@ -22,8 +22,6 @@ namespace SelfManagement.API.Extensions
                 };
             });
             #endregion End here controller
-
-           
             return services;
         }
     }

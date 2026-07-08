@@ -18,6 +18,7 @@ namespace SelfManagement.Infrastructure.Database
         public DbSet<State> States { get; set; }
         public DbSet<Todo> Todos { get; set; }
         public DbSet<TodoSkill> TodoSkills { get; set; }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
             

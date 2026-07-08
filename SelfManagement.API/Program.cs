@@ -1,19 +1,10 @@
 using SelfManagement.API.Extensions;
 using SelfManagement.API.Middleware;
-using SelfManagement.API.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddDependencyInjection();
-builder.Services.Configure<EmailSetting>(options =>
-{
-    builder.Configuration.GetSection("EmailSettings").Bind(options);
-
-    options.TemplatePath = Path.Combine(
-        builder.Environment.ContentRootPath,
-        "EmailTemplates");
-});
+builder.Services.AddDependencyInjection(builder.Configuration);
 builder.Services.AddDatabase(builder.Configuration);
 
 

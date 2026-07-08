@@ -20,5 +20,7 @@ namespace SelfManagement.Domain.Entities
         public DateTime? DeletedAt { get; set; }
         public bool IsDeleted { get; set; } = false;
 
+        public ICollection<UserOtp> Otps { get; set; } = [];
+
     }
 }

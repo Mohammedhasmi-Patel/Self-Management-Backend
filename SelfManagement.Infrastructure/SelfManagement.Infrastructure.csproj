@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SelfManagement.Application\SelfManagement.Application.csproj" />
     <ProjectReference Include="..\SelfManagement.Domain\SelfManagement.Domain.csproj" ReferenceOutputAssembly="true" />
   </ItemGroup>
 
