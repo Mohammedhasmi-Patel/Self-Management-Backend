@@ -12,8 +12,8 @@ using SelfManagement.Infrastructure.Database;
 namespace SelfManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260708192135_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260709184622_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -795,6 +795,44 @@ namespace SelfManagement.Infrastructure.Migrations
                     b.ToTable("TodoSkills");
                 });
 
+            modelBuilder.Entity("SelfManagement.Domain.Entities.UserOtp", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("AttemptCount")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("Otp")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("VerifiedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserOtps");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.HasOne("SelfManagement.Domain.Entities.ApplicationRole", null)
@@ -1053,6 +1091,15 @@ namespace SelfManagement.Infrastructure.Migrations
                     b.Navigation("Skill");
 
                     b.Navigation("Todo");
+                });
+
+            modelBuilder.Entity("SelfManagement.Domain.Entities.UserOtp", b =>
+                {
+                    b.HasOne("SelfManagement.Domain.Entities.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SelfManagement.Domain.Entities.Category", b =>

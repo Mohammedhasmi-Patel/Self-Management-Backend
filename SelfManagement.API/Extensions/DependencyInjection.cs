@@ -5,6 +5,8 @@ using SelfManagement.Application.DTO.Common;
 using SelfManagement.Domain.Entities;
 using SelfManagement.Infrastructure.Database;
 using Microsoft.AspNetCore.Identity;
+using SelfManagement.Application.RepositoryInterface;
+using SelfManagement.Infrastructure.Repository;
 
 
 namespace SelfManagement.API.Extensions
@@ -13,6 +15,8 @@ namespace SelfManagement.API.Extensions
     {
         public static IServiceCollection AddDependencyInjection(this IServiceCollection services,IConfiguration configuration)
         {
+
+            services.Configure<SmtpSettings>(configuration.GetSection("SmtpSettings"));
             #region start controller here
             services.AddControllers().ConfigureApiBehaviorOptions(options =>
             {
@@ -34,6 +38,9 @@ namespace SelfManagement.API.Extensions
              .AddDefaultTokenProviders();
 
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IOtpService, OtpService>();
+            services.AddScoped<IOtpRepository,OtpRepository>();
 
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();

@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SelfManagement.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -205,6 +205,30 @@ namespace SelfManagement.Infrastructure.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserOtps",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Email = table.Column<string>(type: "text", nullable: false),
+                    Otp = table.Column<int>(type: "integer", nullable: false),
+                    ExpiresAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    VerifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    IsUsed = table.Column<bool>(type: "boolean", nullable: false),
+                    AttemptCount = table.Column<int>(type: "integer", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserOtps", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserOtps_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -698,6 +722,11 @@ namespace SelfManagement.Infrastructure.Migrations
                 name: "IX_TodoSkills_TodoId",
                 table: "TodoSkills",
                 column: "TodoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserOtps_UserId",
+                table: "UserOtps",
+                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -726,6 +755,9 @@ namespace SelfManagement.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "TodoSkills");
+
+            migrationBuilder.DropTable(
+                name: "UserOtps");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

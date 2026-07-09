@@ -13,10 +13,12 @@ namespace SelfManagement.Application.Services
     public class AuthService : IAuthService
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IOtpService _otpService;
 
-        public AuthService(UserManager<ApplicationUser> userManager)
+        public AuthService(UserManager<ApplicationUser> userManager, IOtpService otpService)
         {
             _userManager = userManager;
+            _otpService = otpService;
         }
         public async Task<ApiResponse<object>> RegisterUser(RegisterUserRequest request)
         {
@@ -45,9 +47,13 @@ namespace SelfManagement.Application.Services
             }
 
             await _userManager.AddToRoleAsync(user, nameof(ApplicationUserRole.User));
+
+            await _otpService.GenerateAndSendOtpAsync(user.Email, user.Id);
+
             return ApiResponse<object>.SuccessResponse(null, "User registered successfully.");
 
-
         }
+
+        
     }
 }

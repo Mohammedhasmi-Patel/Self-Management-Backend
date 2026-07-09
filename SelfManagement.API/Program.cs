@@ -11,7 +11,6 @@ builder.Services.AddDependencyInjection(builder.Configuration);
 
 
 var app = builder.Build();
-app.UseGlobalExceptionMiddleware();
 // Configure the HTTP request pipeline.
 await DatabaseSeeder.SeedAsync(app.Services);
 
@@ -27,6 +26,9 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseGlobalExceptionMiddleware();
+
 app.MapControllers();
+
 
 app.Run();
