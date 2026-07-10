@@ -12,7 +12,7 @@ builder.Services.AddDependencyInjection(builder.Configuration);
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.
-await DatabaseSeeder.SeedAsync(app.Services);
+//await DatabaseSeeder.SeedAsync(app.Services);
 
 
 if (app.Environment.IsDevelopment())

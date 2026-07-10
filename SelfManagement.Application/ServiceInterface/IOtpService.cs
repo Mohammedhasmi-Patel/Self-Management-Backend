@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SelfManagement.Application.DTO.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,7 @@ namespace SelfManagement.Application.ServiceInterface
     public interface IOtpService
     {
         Task<int> GenerateAndSendOtpAsync(string email,Guid? userId);
-        Task<(bool Success, string Message)> VerifyOtpAsync(string email, int otp);
+        Task<ApiResponse<object>> VerifyOtpAsync(string email, int otp);
 
     }
 }

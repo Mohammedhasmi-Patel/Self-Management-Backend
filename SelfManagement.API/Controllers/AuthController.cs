@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+﻿
 using Microsoft.AspNetCore.Mvc;
 using SelfManagement.Application.DTO.Auth;
 using SelfManagement.Application.Exceptions;
 using SelfManagement.Application.ServiceInterface;
-using static System.Net.WebRequestMethods;
 
 namespace SelfManagement.API.Controllers
 {
@@ -31,13 +29,8 @@ namespace SelfManagement.API.Controllers
         [HttpPost("verify-otp")]
         public async Task<IActionResult> VerifyOtp(VerifyOtpRequest request)
         {
-            var (success, message) = await _otpService.VerifyOtpAsync(request.Email, request.Otp);
-            if (!success)
-            {
-                throw new BadRequestException(message);
-            }
-
-            return Ok(message);
+            var response = await _otpService.VerifyOtpAsync(request.Email, request.Otp);
+            return Ok(response);
         }
     }
 }

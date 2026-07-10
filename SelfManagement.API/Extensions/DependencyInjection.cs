@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using SelfManagement.Application.DTO.Common;
+using SelfManagement.Application.RepositoryInterface;
 using SelfManagement.Application.ServiceInterface;
 using SelfManagement.Application.Services;
-using SelfManagement.Application.DTO.Common;
 using SelfManagement.Domain.Entities;
 using SelfManagement.Infrastructure.Database;
-using Microsoft.AspNetCore.Identity;
-using SelfManagement.Application.RepositoryInterface;
 using SelfManagement.Infrastructure.Repository;
+using System.Text.Json;
 
 
 namespace SelfManagement.API.Extensions
@@ -18,7 +19,12 @@ namespace SelfManagement.API.Extensions
 
             services.Configure<SmtpSettings>(configuration.GetSection("SmtpSettings"));
             #region start controller here
-            services.AddControllers().ConfigureApiBehaviorOptions(options =>
+            services.AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+                })
+                .ConfigureApiBehaviorOptions(options =>
             {
                 options.InvalidModelStateResponseFactory = context =>
                 {

@@ -1,6 +1,9 @@
-﻿using SelfManagement.Application.RepositoryInterface;
+﻿using SelfManagement.Application.DTO.Common;
+using SelfManagement.Application.Exceptions;
+using SelfManagement.Application.RepositoryInterface;
 using SelfManagement.Application.ServiceInterface;
 using SelfManagement.Domain.Entities;
+using static SelfManagement.Application.Exceptions.BadRequestException;
 
 namespace SelfManagement.Application.Services
 {
@@ -46,42 +49,44 @@ namespace SelfManagement.Application.Services
             return otpCode;
         }
 
-        public async Task<(bool Success, string Message)> VerifyOtpAsync(string email, int otp)
+        public async Task<ApiResponse<object>> VerifyOtpAsync(string email, int otp)
         {
-            var latestOtpRecord = await _otpRepository.GetLatestOtpByEmailAsync(email);
-            if (latestOtpRecord is null)
+            var otpRecord = await _otpRepository.GetLatestOtpByEmailAsync(email);
+
+            if(otpRecord is null)
             {
-                return (false, "No OTP found. Please request a new one.");
+                throw new NotFoundException("No OTP found. Please request a new OTP.");
             }
 
-            if (latestOtpRecord.IsUsed)
+            if (otpRecord.IsUsed)
             {
-                return (false, "OTP already used. Please request a new one.");
+                throw new ConflictException("OTP already used. Please request a new OTP.");
             }
 
-            if (latestOtpRecord.ExpiresAt < DateTime.UtcNow)
+            if (otpRecord.ExpiresAt <= DateTime.UtcNow)
             {
-                return (false, "OTP expired. Please request a new one.");
+                throw new ConflictException("OTP expired. Please request a new OTP.");
             }
 
-            if(latestOtpRecord.AttemptCount >= MaxAttempts)
+            if (otpRecord.AttemptCount >= MaxAttempts)
+                throw new ConflictException("Too many attempts. Please request a new OTP.");
+
+            if(otpRecord.AttemptCount >= MaxAttempts)
             {
-                return (false, "Too many attempts. Please request a new OTP.");
+                throw new ConflictException("Too many attempts. Please request a new OTP.");
             }
 
-            latestOtpRecord.AttemptCount++;
-
-            if (latestOtpRecord.Otp != otp)
+            if(otpRecord.Otp != otp)
             {
+                otpRecord.AttemptCount++;
                 await _otpRepository.SaveChangesAsync();
-                return (false, "Invalid OTP.");
+                throw new BadRequestException("Invalid OTP.");
             }
 
-            latestOtpRecord.IsUsed = true;
-            latestOtpRecord.VerifiedAt = DateTime.UtcNow;
+            otpRecord.IsUsed = true;
+            otpRecord.VerifiedAt = DateTime.UtcNow;
             await _otpRepository.SaveChangesAsync();
-            return (true, "OTP verified successfully.");
-
+            return ApiResponse<object>.SuccessResponse(null, "OTP verified successfully.");
         }
 
         private static int GenerateSixDigitOtp()

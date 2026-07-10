@@ -38,8 +38,7 @@ namespace SelfManagement.API.Middleware
             var response = ApiResponse<object>.FailureResponse(ex.Message);
             context.Response.StatusCode = statusCode;
 
-            var json = JsonSerializer.Serialize(response);
-            return context.Response.WriteAsync(json);
+            return context.Response.WriteAsJsonAsync(response);
         }
     }
     public static class MiddlewareExtensions
