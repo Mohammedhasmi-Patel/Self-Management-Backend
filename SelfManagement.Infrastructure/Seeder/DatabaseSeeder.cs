@@ -2,11 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using SelfManagement.Domain.Entities;
 using SelfManagement.Infrastructure.Database;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SelfManagement.Infrastructure.Seeder
 {
