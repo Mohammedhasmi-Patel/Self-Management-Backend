@@ -9,7 +9,6 @@ namespace SelfManagement.Domain.Entities
 
         public Guid StateId { get; set; }
 
-
         public string Name { get; set; } = string.Empty;
 
         public decimal? Latitude { get; set; }

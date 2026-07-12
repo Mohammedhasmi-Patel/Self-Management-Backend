@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace SelfManagement.Application.Exceptions
 {
     public class AppException : Exception
@@ -28,6 +23,8 @@ namespace SelfManagement.Application.Exceptions
         {
             public UnauthorizedException(string message) : base(message, 401) { }
         }
+
+
         public class ConflictException : AppException
         {
             public ConflictException(string message) : base(message, 409) { }

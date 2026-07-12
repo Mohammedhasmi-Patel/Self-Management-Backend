@@ -4,7 +4,7 @@ namespace SelfManagement.Domain.Entities
     public class Company : BaseEntity
     {
         public Guid Id { get; set; }
-        public string UserId { get; set; } = null!;
+        public Guid UserId { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Slug { get; set; } = string.Empty;
         public string? Description { get; set; }

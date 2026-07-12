@@ -353,11 +353,7 @@ namespace SelfManagement.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("UserId1")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("WebsiteUrl")
@@ -371,7 +367,7 @@ namespace SelfManagement.Infrastructure.Migrations
 
                     b.HasIndex("StateId");
 
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Companies");
                 });
@@ -664,9 +660,6 @@ namespace SelfManagement.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<int>("CountryExternalId")
-                        .HasColumnType("integer");
-
                     b.Property<Guid>("CountryId")
                         .HasColumnType("uuid");
 
@@ -922,7 +915,7 @@ namespace SelfManagement.Infrastructure.Migrations
 
                     b.HasOne("SelfManagement.Domain.Entities.ApplicationUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserId1")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

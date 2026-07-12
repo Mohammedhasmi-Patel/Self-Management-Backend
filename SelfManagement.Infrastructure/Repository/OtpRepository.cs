@@ -35,6 +35,7 @@ namespace SelfManagement.Infrastructure.Repository
 
         public async Task<UserOtp?> GetLatestOtpByEmailAsync(string email)
         {
+            var em = email;
             UserOtp latestRecord = await _context.UserOtps
                             .Where(x => x.Email == email && !x.IsUsed)
                             .OrderByDescending(x => x.CreatedAt)

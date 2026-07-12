@@ -1,8 +1,8 @@
 ﻿
 using Microsoft.AspNetCore.Mvc;
 using SelfManagement.Application.DTO.Auth;
-using SelfManagement.Application.Exceptions;
-using SelfManagement.Application.ServiceInterface;
+using SelfManagement.Application.DTO.Common;
+using SelfManagement.Application.ServiceInterface.Auth;
 
 namespace SelfManagement.API.Controllers
 {
@@ -30,6 +30,21 @@ namespace SelfManagement.API.Controllers
         public async Task<IActionResult> VerifyOtp(VerifyOtpRequest request)
         {
             var response = await _otpService.VerifyOtpAsync(request.Email, request.Otp);
+            return Ok(response);
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(LoginUserRequest request)
+        {
+            var response = await _authService.LoginUser(request);
+            return Ok(response);
+        }
+
+        [HttpPost("generate-otp")]
+        public async Task<IActionResult> GenerateAndSendOtpAsync(string email)
+        {
+            var response = await _otpService.GenerateAndSendOtpAsync(email,null);
+            var res = ApiResponse<object>.SuccessResponse(null, "We have sent otp to your email");
             return Ok(response);
         }
     }

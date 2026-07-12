@@ -1,13 +1,21 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using SelfManagement.Application.DTO.Common;
 using SelfManagement.Application.RepositoryInterface;
+using SelfManagement.Application.RepositoryInterface.Company;
 using SelfManagement.Application.ServiceInterface;
-using SelfManagement.Application.Services;
+using SelfManagement.Application.ServiceInterface.Auth;
+using SelfManagement.Application.ServiceInterface.Company;
+using SelfManagement.Application.Services.Auth;
+using SelfManagement.Application.Services.Companies;
 using SelfManagement.Domain.Entities;
 using SelfManagement.Infrastructure.Database;
 using SelfManagement.Infrastructure.Repository;
+using System.Text;
 using System.Text.Json;
+using Microsoft.OpenApi.Models;
 
 
 namespace SelfManagement.API.Extensions
@@ -16,8 +24,10 @@ namespace SelfManagement.API.Extensions
     {
         public static IServiceCollection AddDependencyInjection(this IServiceCollection services,IConfiguration configuration)
         {
-
+            JwtConfiguration jwtConfiguration = configuration.GetSection("JwtConfiguration").Get<JwtConfiguration>()!;
+            
             services.Configure<SmtpSettings>(configuration.GetSection("SmtpSettings"));
+            services.Configure<JwtConfiguration>(configuration.GetSection("JwtConfiguration"));
             #region start controller here
             services.AddControllers()
                 .AddJsonOptions(options =>
@@ -43,13 +53,78 @@ namespace SelfManagement.API.Extensions
              .AddEntityFrameworkStores<ApplicationDbContext>()
              .AddDefaultTokenProviders();
 
+            services.AddScoped<ICompaniesService, CompaniesService>();
+            services.AddScoped<ICompaniesRepository, CompaniesRepository>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IOtpService, OtpService>();
             services.AddScoped<IOtpRepository,OtpRepository>();
+            services.AddScoped<IJwtService,JwtService>();
 
             services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(options =>
+            {
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "Enter your JWT token in the text box below. Example: 'abc123xyz'"
+                });
+
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        Array.Empty<string>()
+                    }
+                });
+
+            });
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                .AddJwtBearer(options =>
+                {
+
+                    options.Events = new JwtBearerEvents()
+                    {
+                        OnChallenge = async (context) =>
+                        {
+                            context.HandleResponse();
+
+                            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                            context.Response.ContentType = "application/json";
+
+                            await context.Response.WriteAsJsonAsync(ApiResponse<object>.FailureResponse("Unauthorized. Please login first."));
+
+                        }
+                    };
+                    options.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = jwtConfiguration.Issuer,
+                        ValidAudience = jwtConfiguration.Audience,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfiguration.Key))
+                    };
+                });
+            // Ensure authorization services are registered so UseAuthorization works
+            services.AddAuthorization();
             return services;
         }
     }

@@ -7,8 +7,6 @@ namespace SelfManagement.Domain.Entities
 
         public Guid CountryId { get; set; }
 
-        public int CountryExternalId { get; set; }
-
         public string Name { get; set; } = string.Empty;
 
         public string StateCode { get; set; } = string.Empty;
