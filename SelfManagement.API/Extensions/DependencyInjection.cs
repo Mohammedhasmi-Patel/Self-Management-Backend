@@ -16,6 +16,10 @@ using SelfManagement.Infrastructure.Repository;
 using System.Text;
 using System.Text.Json;
 using Microsoft.OpenApi.Models;
+using SelfManagement.Application.ServiceInterface.FileStorage;
+using SelfManagement.Application.Services.FileStorage;
+using SelfManagement.Application.RepositoryInterface.Locations;
+using SelfManagement.Infrastructure.Repository.Location;
 
 
 namespace SelfManagement.API.Extensions
@@ -60,6 +64,11 @@ namespace SelfManagement.API.Extensions
             services.AddScoped<IOtpService, OtpService>();
             services.AddScoped<IOtpRepository,OtpRepository>();
             services.AddScoped<IJwtService,JwtService>();
+            services.AddScoped<IFileService,FileService>();
+            services.AddScoped<ICountriesRepository, CountriesRepository>();
+            services.AddScoped<IStateRepository, StateRepository>();
+            services.AddScoped<ICityRepository, CityRepository>();
+
 
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(options =>

@@ -30,9 +30,9 @@ namespace SelfManagement.Application.Exceptions
             public ConflictException(string message) : base(message, 409) { }
         }
 
-        public class InternalServerError : AppException
+        public class InternalServerErrorExcdeption : AppException
         {
-            public InternalServerError(string message) : base(message, 500)
+            public InternalServerErrorExcdeption(string message) : base(message, 500)
             {
 
             }

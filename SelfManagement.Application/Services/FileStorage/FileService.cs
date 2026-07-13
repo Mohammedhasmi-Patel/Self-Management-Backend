@@ -26,6 +26,7 @@ namespace SelfManagement.Application.Services.FileStorage
             }
 
             var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+
             if (!allowedExtensions.Contains(extension))
             {
                 result.IsSuccess = false;
@@ -41,7 +42,8 @@ namespace SelfManagement.Application.Services.FileStorage
                 return result;
             }
 
-            var uploadsFolder = Path.Combine(_env.WebRootPath, folderName);
+            const string rootFolder = "uploads";
+            var uploadsFolder = Path.Combine(_env.WebRootPath, rootFolder, folderName);
             if (!Directory.Exists(uploadsFolder))
             {
                 Directory.CreateDirectory(uploadsFolder);
@@ -58,8 +60,7 @@ namespace SelfManagement.Application.Services.FileStorage
 
             result.IsSuccess = true;
             result.FileName = uniqueFileName;
-            result.FilePath = Path.Combine(folderName, uniqueFileName).Replace("\\", "/");
-            result.Extension = extension;
+            result.FilePath = Path.Combine(rootFolder, folderName, uniqueFileName).Replace("\\", "/"); result.Extension = extension;
             result.SizeInKb = Math.Round((double)file.Length / 1024, 2); // Convert to KB
 
             return result;

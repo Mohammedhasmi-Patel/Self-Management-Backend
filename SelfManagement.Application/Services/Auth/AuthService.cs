@@ -43,7 +43,7 @@ namespace SelfManagement.Application.Services.Auth
             JwtConfigurationResponse tokenResponse = await _jwtService.GenerateJwtToken(existingUser!);
             if (!tokenResponse.Success)
             {
-                throw new InternalServerError("Something went wrong.");
+                throw new InternalServerErrorExcdeption("Something went wrong.");
             }
 
             LoginUserResponse response = new LoginUserResponse()

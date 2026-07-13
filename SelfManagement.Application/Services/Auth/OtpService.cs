@@ -113,7 +113,7 @@ namespace SelfManagement.Application.Services.Auth
 
             if (!result.Succeeded)
             {
-                throw new InternalServerError("Failed to update user.");
+                throw new InternalServerErrorExcdeption("Failed to update user.");
             }
 
             await _otpRepository.SaveChangesAsync();

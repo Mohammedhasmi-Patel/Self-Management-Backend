@@ -5,6 +5,7 @@ using SelfManagement.Application.DTO.Company;
 using SelfManagement.Application.RepositoryInterface.Company;
 using SelfManagement.Domain.Entities;
 using SelfManagement.Infrastructure.Database;
+using System.Text.RegularExpressions;
 
 namespace SelfManagement.Infrastructure.Repository
 {
@@ -16,6 +17,33 @@ namespace SelfManagement.Infrastructure.Repository
         {
             _context = context;
         }
+
+        public  async Task<string> GenerateUniqueSlugAsync(string name)
+        {
+            // Create base slug
+            string baseSlug = Regex.Replace(name.Trim().ToLower(), @"[^a-z0-9\s-]", "")
+                                   .Replace(" ", "-");
+            baseSlug = Regex.Replace(baseSlug, "-+", "-");
+
+            string slug = baseSlug;
+            int count = 1;
+
+            while (await _context.Companies.AnyAsync(c => c.Slug == slug))
+            {
+                slug = $"{baseSlug}-{count}";
+                count++;
+            }
+
+            return slug;
+        }
+
+        public async Task<bool> CreateCompanyAsync(Company company)
+        {
+            await _context.Companies.AddAsync(company);
+            var rowsAffected = await _context.SaveChangesAsync();
+            return rowsAffected > 0;
+        }
+
         public async Task<PaginatedResponse<CompanyListResponse>> GetAllCompaniesByUserAsync(GetCompaniesRequest request,Guid userId)
         {
             IQueryable<Company> query = _context.Companies
@@ -57,5 +85,7 @@ namespace SelfManagement.Infrastructure.Repository
                 TotalPages = (int)Math.Ceiling(totalCount / (double)request.PageSize)
             };
         }
+
+        
     }
 }

@@ -13,7 +13,7 @@ namespace SelfManagement.Infrastructure.Seeder
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
             // get application db context
             var applicationDbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            //await RoleSeeder.SeedAsync(roleManager);
+            await RoleSeeder.SeedAsync(roleManager);
             //await CountryStateCitySeeder.SeedAsync(applicationDbContext);
 
         }
