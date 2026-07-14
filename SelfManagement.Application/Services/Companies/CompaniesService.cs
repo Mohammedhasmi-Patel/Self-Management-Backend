@@ -1,7 +1,6 @@
 ﻿
 using SelfManagement.Application.DTO.Common;
 using SelfManagement.Application.DTO.Company;
-using SelfManagement.Application.Exceptions;
 using SelfManagement.Application.RepositoryInterface.Company;
 using SelfManagement.Application.RepositoryInterface.Locations;
 using SelfManagement.Application.ServiceInterface.Company;
@@ -56,7 +55,8 @@ namespace SelfManagement.Application.Services.Companies
 
 
 
-            var result = await _fileService.UploadFileAsync( request.Logo,"companies",new[] { ".jpg", ".jpeg", ".png", ".webp" },5);
+            var result = await _fileService.SaveFileAsync( request.Logo,"companies",new[] { ".jpg", ".jpeg", ".png", ".webp" },5);
+            //var result = await _fileService.SaveFileAsync(request.Logo, "uploads/company");
             Company company = new Company()
             {
                 Id = Guid.NewGuid(),

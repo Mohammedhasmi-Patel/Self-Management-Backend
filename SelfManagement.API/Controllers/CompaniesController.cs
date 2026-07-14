@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SelfManagement.Application.DTO.Common;
 using SelfManagement.Application.DTO.Company;
 using SelfManagement.Application.ServiceInterface.Company;
 using System.Security.Claims;
