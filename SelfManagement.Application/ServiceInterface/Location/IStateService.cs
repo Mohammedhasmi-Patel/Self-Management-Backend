@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+
+using SelfManagement.Application.DTO.Common;
+using SelfManagement.Application.DTO.Locations.States;
 
 namespace SelfManagement.Application.ServiceInterface.Location
 {
-    internal class StateService
+    public interface IStateService
     {
+        public Task<ApiResponse<List<StateListDropdown>>> GetStatesByCountryIdAsync(Guid id);
+        public Task<StateResponse?> GetStateByIdAsdync(Guid id);
+
     }
 }

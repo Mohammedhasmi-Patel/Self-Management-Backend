@@ -56,7 +56,7 @@ namespace SelfManagement.Infrastructure.Repository
             {
                 return new PaginatedResponse<CompanyListResponse>
                 {
-                    Items = System.Linq.Enumerable.Empty<CompanyListResponse>(),
+                    Items = Enumerable.Empty<CompanyListResponse>(),
                     PageNumber = request.PageNumber,
                     PageSize = request.PageSize,
                     TotalCount = 0,
@@ -65,15 +65,23 @@ namespace SelfManagement.Infrastructure.Repository
             }
 
             List<CompanyListResponse> companies = await query
+                                                .Where(x => !x.IsDeleted)
                                                 .Skip((request.PageNumber - 1) * request.PageSize)
                                                 .Take(request.PageSize)
                                                 .Select(x => new CompanyListResponse()
                                                 {
                                                     Id = x.Id,
                                                     Name = x.Name,
-                                                    Address = x.Address!,
-                                                    LogoUrl = x.LogoUrl
-                                                    ,CreatedAt = x.CreatedAt
+                                                    Description = x.Description,
+                                                    LogoUrl = x.LogoUrl,
+                                                    WebsiteUrl = x.WebsiteUrl,
+                                                    PhoneNumber = x.PhoneNumber!,
+                                                    Email = x.Email,
+                                                    Address = x.Address,
+                                                    CountryId = x.CountryId,
+                                                    StateId = x.StateId,
+                                                    CityId = x.CityId,
+                                                    CreatedAt = x.CreatedAt
                                                 })
                                                 .ToListAsync();
             return new PaginatedResponse<CompanyListResponse>()
@@ -86,6 +94,32 @@ namespace SelfManagement.Infrastructure.Repository
             };
         }
 
-        
+        public async Task<bool> UpdateCompanyAsync(Company company)
+        {
+            _context.Companies.Update(company);
+
+            int rowsAffected = await _context.SaveChangesAsync();
+
+            return rowsAffected > 0;
+        }
+
+        public async Task<Company?> GetCompanyByIdAsync(Guid id)
+        {
+           return await _context.Companies.FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<bool> DeleteCompanyByIdAsync(Guid id)
+        {
+            Company company = await _context.Companies.FirstOrDefaultAsync(x => x.Id == id);
+            if (company == null) return false;
+
+            company.IsActive = false;
+            company.IsDeleted = true;
+            company.DeletedAt = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+            return true;
+
+        }
     }
 }

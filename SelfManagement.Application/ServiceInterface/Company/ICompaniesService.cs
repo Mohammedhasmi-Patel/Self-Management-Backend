@@ -8,5 +8,8 @@ namespace SelfManagement.Application.ServiceInterface.Company
     {
         public Task<ApiResponse<PaginatedResponse<CompanyListResponse>>> GetAllCompaniesByUserAsync(GetCompaniesRequest request,Guid userId);
         public Task<ApiResponse<object>> CreateCompanyAsync(CreateCompanyRequest request,Guid userId);
+        public Task<ApiResponse<object>> UpdateCompanyAsync(CompanyUpdateRequest request, Guid userId);
+        public Task<ApiResponse<object>> DeleteCompanyByIdAsync(Guid id,Guid userId);
+
     }
 }

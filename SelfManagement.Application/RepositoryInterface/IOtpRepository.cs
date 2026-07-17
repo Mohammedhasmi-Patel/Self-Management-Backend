@@ -9,5 +9,6 @@ namespace SelfManagement.Application.RepositoryInterface
         public Task AddAsync(UserOtp userOtp);
         public Task<UserOtp?> GetLatestOtpByEmailAsync(string email);
         Task SaveChangesAsync();
+      
     }
 }

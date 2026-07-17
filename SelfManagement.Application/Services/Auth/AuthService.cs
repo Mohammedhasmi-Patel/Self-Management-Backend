@@ -2,6 +2,7 @@
 using SelfManagement.Application.DTO.Auth;
 using SelfManagement.Application.DTO.Common;
 using SelfManagement.Application.Exceptions;
+using SelfManagement.Application.RepositoryInterface.Common;
 using SelfManagement.Application.ServiceInterface.Auth;
 using SelfManagement.Domain.Entities;
 using SelfManagement.Domain.Enum;
@@ -15,16 +16,19 @@ namespace SelfManagement.Application.Services.Auth
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IOtpService _otpService;
         private readonly IJwtService _jwtService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public AuthService(UserManager<ApplicationUser> userManager, IOtpService otpService, IJwtService jwtService)
+        public AuthService(UserManager<ApplicationUser> userManager, IOtpService otpService, IJwtService jwtService,IUnitOfWork unitOfWork)
         {
             _userManager = userManager;
             _otpService = otpService;
             _jwtService = jwtService;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<ApiResponse<LoginUserResponse>> LoginUser(LoginUserRequest request)
         {
+            await _unitOfWork.BeginTransactionAsync();
             string email = request.Email;
             
             var existingUser = await _userManager.FindByEmailAsync(email);
@@ -56,11 +60,14 @@ namespace SelfManagement.Application.Services.Auth
                 
             };
 
+            await _unitOfWork.SaveChangesAsync();
+
             return ApiResponse<LoginUserResponse>.SuccessResponse(response,"User loggedin successfully.");
         }
 
         public async Task<ApiResponse<object>> RegisterUser(RegisterUserRequest request)
         {
+            await _unitOfWork.BeginTransactionAsync();
             var existingUser = await _userManager.FindByEmailAsync(request.Email);
             if(existingUser is not null)
             {
@@ -88,7 +95,7 @@ namespace SelfManagement.Application.Services.Auth
             await _userManager.AddToRoleAsync(user, nameof(ApplicationUserRole.User));
 
             await _otpService.GenerateAndSendOtpAsync(user.Email, user.Id);
-
+            await _unitOfWork.SaveChangesAsync();
             return ApiResponse<object>.SuccessResponse(null, "User registered successfully.");
 
         }

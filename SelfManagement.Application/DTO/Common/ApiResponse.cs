@@ -12,9 +12,9 @@ namespace SelfManagement.Application.DTO.Common
         {
             return new ApiResponse<T>()
             {
-                Data = data,
+                Success = true,
                 Message = message,
-                Success = true
+                Data = data,
             };
         }
 

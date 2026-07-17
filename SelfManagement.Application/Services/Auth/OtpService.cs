@@ -3,6 +3,7 @@ using SelfManagement.Application.DTO.Auth;
 using SelfManagement.Application.DTO.Common;
 using SelfManagement.Application.Exceptions;
 using SelfManagement.Application.RepositoryInterface;
+using SelfManagement.Application.RepositoryInterface.Common;
 using SelfManagement.Application.ServiceInterface;
 using SelfManagement.Application.ServiceInterface.Auth;
 using SelfManagement.Domain.Entities;
@@ -15,18 +16,21 @@ namespace SelfManagement.Application.Services.Auth
         private readonly IEmailService _emailService;
         private readonly IOtpRepository _otpRepository;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IUnitOfWork _unitOfWork;
 
         private const int ExpiryMinutes = 10;
         private const int MaxAttempts = 5;
 
-        public OtpService(IEmailService emailService,IOtpRepository otpRepository, UserManager<ApplicationUser> userManager)
+        public OtpService(IEmailService emailService,IOtpRepository otpRepository, UserManager<ApplicationUser> userManager,IUnitOfWork unitOfWork)
         {
             _emailService = emailService;
             _otpRepository = otpRepository;
             _userManager = userManager;
+            _unitOfWork = unitOfWork;
         }
         public async Task<GenerateOtpResponse> GenerateAndSendOtpAsync(string email, Guid? userId)
         {
+            await _unitOfWork.BeginTransactionAsync();
             var isUserExist = await GetUserByEmail(email);
             if (!isUserExist)
             {
@@ -58,7 +62,7 @@ namespace SelfManagement.Application.Services.Auth
                   "Your verification code",
                   $"Your OTP is <b>{otpCode}</b>. It expires in {ExpiryMinutes} minutes."
             );
-
+            await _unitOfWork.SaveChangesAsync();
             return new GenerateOtpResponse()
             {
                 Message = "Otp Generate Successfully.",
@@ -68,6 +72,8 @@ namespace SelfManagement.Application.Services.Auth
 
         public async Task<ApiResponse<object>> VerifyOtpAsync(string email, int otp)
         {
+            await _unitOfWork.BeginTransactionAsync();
+
             var otpRecord = await _otpRepository.GetLatestOtpByEmailAsync(email);
 
             if(otpRecord is null)
@@ -117,6 +123,7 @@ namespace SelfManagement.Application.Services.Auth
             }
 
             await _otpRepository.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
             return ApiResponse<object>.SuccessResponse(null, "OTP verified successfully.");
         }
 

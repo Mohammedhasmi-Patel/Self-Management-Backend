@@ -7,7 +7,7 @@ using System.Security.Claims;
 namespace SelfManagement.API.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/companies")]
     [ApiController]
     public class CompaniesController : ControllerBase
     {
@@ -42,5 +42,29 @@ namespace SelfManagement.API.Controllers
             var response = await _companiesService.CreateCompanyAsync(request, userId);
             return Ok(response);
         }
+        [HttpPut]
+        public async Task<IActionResult> UpdateCompanyAsync(CompanyUpdateRequest request)
+        {
+            var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!Guid.TryParse(userIdStr, out var userId))
+            {
+                return Unauthorized("Invalid or missing User ID in token.");
+            }
+            var response = await _companiesService.UpdateCompanyAsync(request, userId);
+            return Ok(response);
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteCompanyAsync(Guid id)
+        {
+            var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!Guid.TryParse(userIdStr, out var userId))
+            {
+                return Unauthorized("Invalid or missing User ID in token.");
+            }
+            var response = await _companiesService.DeleteCompanyByIdAsync(id, userId);
+            return StatusCode(201, response);
+        }
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using SelfManagement.Application.DTO.Common.Filestorage;
 using SelfManagement.Application.Exceptions;
 using SelfManagement.Application.ServiceInterface.FileStorage;
@@ -10,10 +11,12 @@ namespace SelfManagement.Application.Services.FileStorage
     public class FileService : IFileService
     {
         private readonly IWebHostEnvironment _env;
+        private readonly IConfiguration _configuration;
 
-        public FileService(IWebHostEnvironment env)
+        public FileService(IWebHostEnvironment env, IConfiguration configuration)
         {
             _env = env;
+            _configuration = configuration;
         }
 
         public void DeleteFile(string filePath)
@@ -27,8 +30,17 @@ namespace SelfManagement.Application.Services.FileStorage
 
         }
 
-        public async Task<FileMetadataDto> SaveFileAsync(IFormFile file, string subDirectory, string[] allowedExtensions,
-        long maxSizeBytes)
+        public string GetFilePath(string filePath)
+        {
+            if (string.IsNullOrWhiteSpace(filePath))
+                return string.Empty;
+
+            filePath = filePath.Replace("\\", "/").TrimStart('/');
+
+            return $"{_configuration["BackendUrl"]}/upload/{filePath}";
+        }
+
+        public async Task<FileMetadataDto> SaveFileAsync(IFormFile file, string subDirectory, string[] allowedExtensions,long maxSizeBytes)
         {
             if (file == null || file.Length == 0) throw new BadRequestException("Invalid file");
 

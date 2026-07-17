@@ -9,5 +9,8 @@ namespace SelfManagement.Application.RepositoryInterface.Locations
         public Task<bool> IsStateExistAsync(Guid id);
         public Task<List<StateListDropdown>> GetStatesByCountryIdAsync(Guid id);
 
+        public Task<StateResponse?> GetStateByIdAsync(Guid id);
+
+
     }
 }

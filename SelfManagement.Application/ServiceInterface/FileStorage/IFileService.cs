@@ -9,5 +9,7 @@ namespace SelfManagement.Application.ServiceInterface.FileStorage
     {
         Task<FileMetadataDto> SaveFileAsync(IFormFile file, string subDirectory, string[] allowedExtensions,long maxSizeBytes);
         void DeleteFile(string filePath);
+
+        string GetFilePath(string filePath);
     }
 }

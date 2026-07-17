@@ -9,6 +9,8 @@ builder.Services.AddDependencyInjection(builder.Configuration);
 
 
 var app = builder.Build();
+app.UseStaticFiles();
+
 // Configure the HTTP request pipeline.
 await DatabaseSeeder.SeedAsync(app.Services);
 
@@ -18,7 +20,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
 app.UseHttpsRedirection();
 app.UseGlobalExceptionMiddleware();
 
