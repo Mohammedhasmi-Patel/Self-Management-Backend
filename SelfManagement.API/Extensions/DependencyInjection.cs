@@ -62,6 +62,7 @@ namespace SelfManagement.API.Extensions
              .AddDefaultTokenProviders();
 
             services.AddScoped<ICompaniesRepository, CompaniesRepository>();
+            services.AddScoped<SelfManagement.Application.RepositoryInterface.Category.ICategoryRepository, SelfManagement.Infrastructure.Repository.CategoryRepository>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IOtpService, OtpService>();
@@ -71,6 +72,9 @@ namespace SelfManagement.API.Extensions
             services.AddScoped<ICountriesRepository, CountriesRepository>();
             services.AddScoped<IStateRepository, StateRepository>();
             services.AddScoped<ICitiesRepository, CityRepository>();
+            services.AddScoped<SelfManagement.Application.ServiceInterface.Category.ICategoriesService, SelfManagement.Application.Services.Categories.CategoriesService>();
+            services.AddScoped<SelfManagement.Application.RepositoryInterface.Skill.ISkillRepository, SelfManagement.Infrastructure.Repository.SkillRepository>();
+            services.AddScoped<SelfManagement.Application.ServiceInterface.Skill.ISkillsService, SelfManagement.Application.Services.Skills.SkillsService>();
             services.AddScoped<ICompaniesService, CompaniesService>();
             services.AddScoped<ICountriesService, CountriesService>();
             services.AddScoped<IStateService, StateService>();

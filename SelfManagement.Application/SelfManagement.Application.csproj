@@ -15,8 +15,4 @@
     <ProjectReference Include="..\SelfManagement.Domain\SelfManagement.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="DTO\Category\" />
-  </ItemGroup>
-
 </Project>
