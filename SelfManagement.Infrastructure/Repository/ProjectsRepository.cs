@@ -38,8 +38,8 @@ namespace SelfManagement.Infrastructure.Repository
         public async Task<bool> CreateProjectAsync(Project project)
         {
             await _context.Projects.AddAsync(project);
-            var rows = await _context.SaveChangesAsync();
-            return rows > 0;
+            // UnitOfWork will call SaveChangesAsync
+            return true;
         }
 
         public async Task<PaginatedResponse<ProjectListResponse>> GetAllProjectsByUserAsync(GetProjectsRequest request, Guid userId)
@@ -101,8 +101,8 @@ namespace SelfManagement.Infrastructure.Repository
         public async Task<bool> UpdateProjectAsync(Project project)
         {
             _context.Projects.Update(project);
-            int rows = await _context.SaveChangesAsync();
-            return rows > 0;
+            // UnitOfWork will call SaveChangesAsync
+            return true;
         }
 
         public async Task<Project?> GetProjectByIdAsync(Guid id)
@@ -118,7 +118,7 @@ namespace SelfManagement.Infrastructure.Repository
             project.IsDeleted = true;
             project.DeletedAt = DateTime.UtcNow;
 
-            await _context.SaveChangesAsync();
+            // UnitOfWork will call SaveChangesAsync
             return true;
         }
     }

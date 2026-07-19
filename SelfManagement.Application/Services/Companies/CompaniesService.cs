@@ -34,6 +34,8 @@ namespace SelfManagement.Application.Services.Companies
         public async Task<ApiResponse<object>> CreateCompanyAsync(CreateCompanyRequest request,Guid userId)
         {
             await _unitOfWork.BeginTransactionAsync();
+            try
+            {
 
             Guid countryId = request.CountryId;
             var isCountryExist = await _countryRepository.IsCompanyExistAsync(countryId);
@@ -96,10 +98,19 @@ namespace SelfManagement.Application.Services.Companies
             await _unitOfWork.CommitTransactionAsync();
 
             return ApiResponse<object>.SuccessResponse(null,"Company created successfully.");
+            }
+            catch
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                throw;
+            }
         }
 
         public async Task<ApiResponse<object>> DeleteCompanyByIdAsync(Guid id, Guid userId)
         {
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
             var res = await _companiesRepository.GetCompanyByIdAsync(id);
             if (res == null || res.Id == Guid.Empty)
             {
@@ -112,7 +123,15 @@ namespace SelfManagement.Application.Services.Companies
             }
 
             var response = await _companiesRepository.DeleteCompanyByIdAsync(id);
+            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.CommitTransactionAsync();
             return ApiResponse<object>.SuccessResponse(null,"Company deleted successfully.");
+            }
+            catch
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                throw;
+            }
         }
 
         public async Task<ApiResponse<PaginatedResponse<CompanyListResponse>>> GetAllCompaniesByUserAsync(GetCompaniesRequest request,Guid userId)
@@ -130,6 +149,8 @@ namespace SelfManagement.Application.Services.Companies
         public async Task<ApiResponse<object>> UpdateCompanyAsync(CompanyUpdateRequest request, Guid userId)
         {
             await _unitOfWork.BeginTransactionAsync();
+            try
+            {
 
             var company = await _companiesRepository.GetCompanyByIdAsync(request.Id);
 
@@ -212,6 +233,12 @@ namespace SelfManagement.Application.Services.Companies
             await _unitOfWork.CommitTransactionAsync();
 
             return ApiResponse<object>.SuccessResponse(null, "Company updated successfully.");
+            }
+            catch
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                throw;
+            }
         }
     }
 }

@@ -25,6 +25,8 @@ namespace SelfManagement.Application.Services.Projects
         public async Task<ApiResponse<object>> CreateProjectAsync(CreateProjectRequest request, Guid userId)
         {
             await _unitOfWork.BeginTransactionAsync();
+            try
+            {
 
             var company = await _companiesRepository.GetCompanyByIdAsync(request.CompanyId);
             if (company == null)
@@ -57,10 +59,19 @@ namespace SelfManagement.Application.Services.Projects
             await _unitOfWork.CommitTransactionAsync();
 
             return ApiResponse<object>.SuccessResponse(null, "Project created successfully.");
+            }
+            catch
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                throw;
+            }
         }
 
         public async Task<ApiResponse<object>> DeleteProjectByIdAsync(Guid id, Guid userId)
         {
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
             var project = await _projectsRepository.GetProjectByIdAsync(id);
             if (project == null || project.Id == Guid.Empty)
             {
@@ -78,7 +89,15 @@ namespace SelfManagement.Application.Services.Projects
                 throw new InternalServerErrorExcdeption("Something went wrong while deleting project");
             }
 
+            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.CommitTransactionAsync();
             return ApiResponse<object>.SuccessResponse(null, "Project deleted successfully.");
+            }
+            catch
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                throw;
+            }
         }
 
         public async Task<ApiResponse<PaginatedResponse<ProjectListResponse>>> GetAllProjectsByUserAsync(GetProjectsRequest request, Guid userId)
@@ -90,6 +109,8 @@ namespace SelfManagement.Application.Services.Projects
         public async Task<ApiResponse<object>> UpdateProjectAsync(UpdateProjectRequest request, Guid userId)
         {
             await _unitOfWork.BeginTransactionAsync();
+            try
+            {
 
             var project = await _projectsRepository.GetProjectByIdAsync(request.Id);
             if (project == null)
@@ -133,6 +154,12 @@ namespace SelfManagement.Application.Services.Projects
             await _unitOfWork.CommitTransactionAsync();
 
             return ApiResponse<object>.SuccessResponse(null, "Project updated successfully.");
+            }
+            catch
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                throw;
+            }
         }
     }
 }

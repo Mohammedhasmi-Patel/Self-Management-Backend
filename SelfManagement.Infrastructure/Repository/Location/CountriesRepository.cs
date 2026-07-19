@@ -17,7 +17,7 @@ namespace SelfManagement.Infrastructure.Repository.Location
 
         public async Task<List<CountryListDropdown>> GetCountryListDropdownAsync()
         {
-            return await _context.Countries.Select(x => new CountryListDropdown()
+            return await _context.Countries.OrderBy(c => c.Name).Select(x => new CountryListDropdown()
             {
                 Id = x.Id,
                 Name = x.Name,

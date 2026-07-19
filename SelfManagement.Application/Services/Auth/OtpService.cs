@@ -30,7 +30,6 @@ namespace SelfManagement.Application.Services.Auth
         }
         public async Task<GenerateOtpResponse> GenerateAndSendOtpAsync(string email, Guid? userId)
         {
-            await _unitOfWork.BeginTransactionAsync();
             var isUserExist = await GetUserByEmail(email);
             if (!isUserExist)
             {
@@ -62,7 +61,6 @@ namespace SelfManagement.Application.Services.Auth
                   "Your verification code",
                   $"Your OTP is <b>{otpCode}</b>. It expires in {ExpiryMinutes} minutes."
             );
-            await _unitOfWork.SaveChangesAsync();
             return new GenerateOtpResponse()
             {
                 Message = "Otp Generate Successfully.",
@@ -73,6 +71,8 @@ namespace SelfManagement.Application.Services.Auth
         public async Task<ApiResponse<object>> VerifyOtpAsync(string email, int otp)
         {
             await _unitOfWork.BeginTransactionAsync();
+            try
+            {
 
             var otpRecord = await _otpRepository.GetLatestOtpByEmailAsync(email);
 
@@ -105,7 +105,8 @@ namespace SelfManagement.Application.Services.Auth
             if(otpRecord.Otp != otp)
             {
                 otpRecord.AttemptCount++;
-                await _otpRepository.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.CommitTransactionAsync();
                 throw new BadRequestException("Invalid OTP.");
             }
 
@@ -122,9 +123,15 @@ namespace SelfManagement.Application.Services.Auth
                 throw new InternalServerErrorExcdeption("Failed to update user.");
             }
 
-            await _otpRepository.SaveChangesAsync();
             await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.CommitTransactionAsync();
             return ApiResponse<object>.SuccessResponse(null, "OTP verified successfully.");
+            }
+            catch
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                throw;
+            }
         }
 
         private static int GenerateSixDigitOtp()

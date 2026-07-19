@@ -25,6 +25,8 @@ namespace SelfManagement.Application.Services.Skills
         public async Task<ApiResponse<object>> CreateSkillAsync(CreateSkillRequest request)
         {
             await _unitOfWork.BeginTransactionAsync();
+            try
+            {
 
             var category = await _categoryRepository.GetCategoryByIdAsync(request.CategoryId);
             if (category == null)
@@ -59,10 +61,19 @@ namespace SelfManagement.Application.Services.Skills
             await _unitOfWork.CommitTransactionAsync();
 
             return ApiResponse<object>.SuccessResponse(null, "Skill created successfully.");
+            }
+            catch
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                throw;
+            }
         }
 
         public async Task<ApiResponse<object>> DeleteSkillByIdAsync(Guid id)
         {
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
             var skill = await _skillRepository.GetSkillByIdAsync(id);
             if (skill == null)
             {
@@ -70,7 +81,15 @@ namespace SelfManagement.Application.Services.Skills
             }
 
             var response = await _skillRepository.DeleteSkillByIdAsync(id);
+            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.CommitTransactionAsync();
             return ApiResponse<object>.SuccessResponse(null, "Skill deleted successfully.");
+            }
+            catch
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                throw;
+            }
         }
 
         public async Task<ApiResponse<PaginatedResponse<SkillListResponse>>> GetAllSkillsAsync(GetSkillsRequest request)
@@ -82,6 +101,8 @@ namespace SelfManagement.Application.Services.Skills
         public async Task<ApiResponse<object>> UpdateSkillAsync(UpdateSkillRequest request)
         {
             await _unitOfWork.BeginTransactionAsync();
+            try
+            {
 
             var skill = await _skillRepository.GetSkillByIdAsync(request.Id);
             if (skill == null)
@@ -110,6 +131,12 @@ namespace SelfManagement.Application.Services.Skills
             await _unitOfWork.CommitTransactionAsync();
 
             return ApiResponse<object>.SuccessResponse(null, "Skill updated successfully.");
+            }
+            catch
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                throw;
+            }
         }
     }
 }

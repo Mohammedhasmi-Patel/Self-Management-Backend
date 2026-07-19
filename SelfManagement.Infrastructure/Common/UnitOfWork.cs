@@ -11,29 +11,37 @@ namespace SelfManagement.Infrastructure.Common
         private readonly ApplicationDbContext _context;
         private IDbContextTransaction? _transaction;
 
-
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
         }
+
         public async Task BeginTransactionAsync()
         {
-            _transaction = await _context.Database.BeginTransactionAsync();
+           _transaction = await _context.Database.BeginTransactionAsync();
         }
 
         public async Task CommitTransactionAsync()
         {
-            await _transaction!.CommitAsync();
+            if (_transaction == null) throw new InvalidOperationException("No active transaction.");
+            await _transaction.CommitAsync();
+            await _transaction.DisposeAsync();
+            _transaction = null;
         }
 
         public async Task RollbackTransactionAsync()
         {
-            await _transaction!.RollbackAsync();
+           if (_transaction == null)
+            return;
+
+            await _transaction.RollbackAsync();
+            await _transaction.DisposeAsync();
+            _transaction = null;
         }
 
-        public async Task<int> SaveChangesAsync()
+        public Task<int> SaveChangesAsync()
         {
-            return await _context.SaveChangesAsync();
+           return _context.SaveChangesAsync();
         }
     }
 }

@@ -6,7 +6,6 @@ using SelfManagement.Application.RepositoryInterface.Common;
 using SelfManagement.Application.ServiceInterface.Auth;
 using SelfManagement.Domain.Entities;
 using SelfManagement.Domain.Enum;
-using SelfManagement.Application.Exceptions;
 
 
 namespace SelfManagement.Application.Services.Auth
@@ -28,7 +27,6 @@ namespace SelfManagement.Application.Services.Auth
 
         public async Task<ApiResponse<LoginUserResponse>> LoginUser(LoginUserRequest request)
         {
-            await _unitOfWork.BeginTransactionAsync();
             string email = request.Email;
             
             var existingUser = await _userManager.FindByEmailAsync(email);
@@ -60,14 +58,14 @@ namespace SelfManagement.Application.Services.Auth
                 
             };
 
-            await _unitOfWork.SaveChangesAsync();
-
             return ApiResponse<LoginUserResponse>.SuccessResponse(response,"User loggedin successfully.");
         }
 
         public async Task<ApiResponse<object>> RegisterUser(RegisterUserRequest request)
         {
             await _unitOfWork.BeginTransactionAsync();
+            try
+            {
             var existingUser = await _userManager.FindByEmailAsync(request.Email);
             if(existingUser is not null)
             {
@@ -96,8 +94,14 @@ namespace SelfManagement.Application.Services.Auth
 
             await _otpService.GenerateAndSendOtpAsync(user.Email, user.Id);
             await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.CommitTransactionAsync();
             return ApiResponse<object>.SuccessResponse(null, "User registered successfully.");
-
+            }
+            catch
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                throw;
+            }
         }
     }
 }

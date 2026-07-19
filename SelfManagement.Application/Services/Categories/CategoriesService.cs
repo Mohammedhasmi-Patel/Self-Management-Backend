@@ -21,6 +21,8 @@ namespace SelfManagement.Application.Services.Categories
         public async Task<ApiResponse<object>> CreateCategoryAsync(CreateCategoryRequest request)
         {
             await _unitOfWork.BeginTransactionAsync();
+            try
+            {
 
             var category = new SelfManagement.Domain.Entities.Category
             {
@@ -39,10 +41,19 @@ namespace SelfManagement.Application.Services.Categories
             await _unitOfWork.CommitTransactionAsync();
 
             return ApiResponse<object>.SuccessResponse(null, "Category created successfully.");
+            }
+            catch
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                throw;
+            }
         }
 
         public async Task<ApiResponse<object>> DeleteCategoryByIdAsync(Guid id)
         {
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
             var category = await _categoryRepository.GetCategoryByIdAsync(id);
             if (category == null)
             {
@@ -50,7 +61,15 @@ namespace SelfManagement.Application.Services.Categories
             }
 
             var response = await _categoryRepository.DeleteCategoryByIdAsync(id);
+            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.CommitTransactionAsync();
             return ApiResponse<object>.SuccessResponse(null, "Category deleted successfully.");
+            }
+            catch
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                throw;
+            }
         }
 
         public async Task<ApiResponse<PaginatedResponse<CategoryListResponse>>> GetAllCategoriesAsync(GetCategoriesRequest request)
@@ -62,6 +81,8 @@ namespace SelfManagement.Application.Services.Categories
         public async Task<ApiResponse<object>> UpdateCategoryAsync(UpdateCategoryRequest request)
         {
             await _unitOfWork.BeginTransactionAsync();
+            try
+            {
 
             var category = await _categoryRepository.GetCategoryByIdAsync(request.Id);
             if (category == null)
@@ -82,6 +103,12 @@ namespace SelfManagement.Application.Services.Categories
             await _unitOfWork.CommitTransactionAsync();
 
             return ApiResponse<object>.SuccessResponse(null, "Category updated successfully.");
+            }
+            catch
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                throw;
+            }
         }
     }
 }

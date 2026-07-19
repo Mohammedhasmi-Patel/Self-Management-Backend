@@ -6,7 +6,7 @@ using SelfManagement.Application.ServiceInterface.Auth;
 
 namespace SelfManagement.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     [ApiController]
     public class AuthController : ControllerBase
     {
