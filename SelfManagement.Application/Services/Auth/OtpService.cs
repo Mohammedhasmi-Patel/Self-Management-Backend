@@ -7,7 +7,7 @@ using SelfManagement.Application.RepositoryInterface.Common;
 using SelfManagement.Application.ServiceInterface;
 using SelfManagement.Application.ServiceInterface.Auth;
 using SelfManagement.Domain.Entities;
-using static SelfManagement.Application.Exceptions.BadRequestException;
+using SelfManagement.Application.Exceptions;
 
 namespace SelfManagement.Application.Services.Auth
 {

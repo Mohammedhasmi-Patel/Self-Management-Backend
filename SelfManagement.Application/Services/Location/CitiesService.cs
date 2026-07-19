@@ -4,7 +4,7 @@ using SelfManagement.Application.DTO.Common;
 using SelfManagement.Application.DTO.Locations.City;
 using SelfManagement.Application.RepositoryInterface.Locations;
 using SelfManagement.Application.ServiceInterface.Location;
-using static SelfManagement.Application.Exceptions.BadRequestException;
+using SelfManagement.Application.Exceptions;
 
 namespace SelfManagement.Application.Services.Location
 {

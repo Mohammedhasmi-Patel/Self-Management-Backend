@@ -5,7 +5,7 @@ using SelfManagement.Application.RepositoryInterface.Category;
 using SelfManagement.Application.RepositoryInterface.Common;
 using SelfManagement.Application.RepositoryInterface.Skill;
 using SelfManagement.Application.ServiceInterface.Skill;
-using static SelfManagement.Application.Exceptions.BadRequestException;
+using SelfManagement.Application.Exceptions;
 
 namespace SelfManagement.Application.Services.Skills
 {

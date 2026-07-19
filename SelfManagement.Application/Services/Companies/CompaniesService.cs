@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SelfManagement.Application.DTO.Common;
 using SelfManagement.Application.DTO.Company;
-using SelfManagement.Application.Exceptions;
 using SelfManagement.Application.RepositoryInterface.Common;
 using SelfManagement.Application.RepositoryInterface.Company;
 using SelfManagement.Application.RepositoryInterface.Locations;
 using SelfManagement.Application.ServiceInterface.Company;
 using SelfManagement.Application.ServiceInterface.FileStorage;
 using SelfManagement.Domain.Entities;
-using static SelfManagement.Application.Exceptions.BadRequestException;
+// Exceptions namespace
+using SelfManagement.Application.Exceptions;
 
 namespace SelfManagement.Application.Services.Companies
 {
@@ -101,7 +101,7 @@ namespace SelfManagement.Application.Services.Companies
         public async Task<ApiResponse<object>> DeleteCompanyByIdAsync(Guid id, Guid userId)
         {
             var res = await _companiesRepository.GetCompanyByIdAsync(id);
-            if(res == null || res.Id == null)
+            if (res == null || res.Id == Guid.Empty)
             {
                 throw new NotFoundException("Company not found with given id.");
             }
@@ -177,7 +177,10 @@ namespace SelfManagement.Application.Services.Companies
             // Upload new logo if provided
             if (request.Logo != null)
             {
-                 _fileService.DeleteFile(company.LogoUrl);
+                if (!string.IsNullOrEmpty(company.LogoUrl))
+                {
+                    _fileService.DeleteFile(company.LogoUrl!);
+                }
 
                 var result = await _fileService.SaveFileAsync(
                     request.Logo,

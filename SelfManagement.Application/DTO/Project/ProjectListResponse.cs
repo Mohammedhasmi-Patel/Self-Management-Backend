@@ -1,33 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-
-namespace SelfManagement.Domain.Entities
+namespace SelfManagement.Application.DTO.Project
 {
-    public class Project : BaseEntity
+    public class ProjectListResponse
     {
         public Guid Id { get; set; }
-
         public string Slug { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
         public string? Description { get; set; }
-        public Guid UserId { get; set; }
-
         public Guid CompanyId { get; set; }
         public string? RepositoryUrl { get; set; }
-
         public DateTime? StartDate { get; set; }
-
         public DateTime? EndDate { get; set; }
-
-        public string Status { get; set; } = string.Empty;
-
+        public string? Status { get; set; }
         public string? Notes { get; set; }
-
-        // Navigation Properties
-            [ForeignKey("UserId")]
-            public ApplicationUser User { get; set; } = null!;
-
-        public Company Company { get; set; } = null!;
-
+        public DateTime CreatedAt { get; set; }
     }
 }

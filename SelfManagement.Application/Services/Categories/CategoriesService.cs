@@ -3,7 +3,7 @@ using SelfManagement.Application.DTO.Common;
 using SelfManagement.Application.RepositoryInterface.Category;
 using SelfManagement.Application.RepositoryInterface.Common;
 using SelfManagement.Application.ServiceInterface.Category;
-using static SelfManagement.Application.Exceptions.BadRequestException;
+using SelfManagement.Application.Exceptions;
 
 namespace SelfManagement.Application.Services.Categories
 {
@@ -32,7 +32,7 @@ namespace SelfManagement.Application.Services.Categories
             var created = await _categoryRepository.CreateCategoryAsync(category);
             if (!created)
             {
-                throw new InternalServerErrorExcdeption("Something went wrong while creating category");
+                throw new InternalServerErrorException("Something went wrong while creating category");
             }
 
             await _unitOfWork.SaveChangesAsync();

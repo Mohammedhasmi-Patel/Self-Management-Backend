@@ -13,10 +13,12 @@ using SelfManagement.Application.ServiceInterface.Auth;
 using SelfManagement.Application.ServiceInterface.Company;
 using SelfManagement.Application.ServiceInterface.FileStorage;
 using SelfManagement.Application.ServiceInterface.Location;
+using SelfManagement.Application.ServiceInterface.Project;
 using SelfManagement.Application.Services.Auth;
 using SelfManagement.Application.Services.Companies;
 using SelfManagement.Application.Services.FileStorage;
 using SelfManagement.Application.Services.Location;
+using SelfManagement.Application.Services.Projects;
 using SelfManagement.Domain.Entities;
 using SelfManagement.Infrastructure.Common;
 using SelfManagement.Infrastructure.Database;
@@ -62,6 +64,7 @@ namespace SelfManagement.API.Extensions
              .AddDefaultTokenProviders();
 
             services.AddScoped<ICompaniesRepository, CompaniesRepository>();
+            services.AddScoped<SelfManagement.Application.RepositoryInterface.Project.IProjectsRepository, SelfManagement.Infrastructure.Repository.ProjectsRepository>();
             services.AddScoped<SelfManagement.Application.RepositoryInterface.Category.ICategoryRepository, SelfManagement.Infrastructure.Repository.CategoryRepository>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IEmailService, EmailService>();
@@ -76,6 +79,7 @@ namespace SelfManagement.API.Extensions
             services.AddScoped<SelfManagement.Application.RepositoryInterface.Skill.ISkillRepository, SelfManagement.Infrastructure.Repository.SkillRepository>();
             services.AddScoped<SelfManagement.Application.ServiceInterface.Skill.ISkillsService, SelfManagement.Application.Services.Skills.SkillsService>();
             services.AddScoped<ICompaniesService, CompaniesService>();
+            services.AddScoped<SelfManagement.Application.ServiceInterface.Project.IProjectsService, SelfManagement.Application.Services.Projects.ProjectsService>();
             services.AddScoped<ICountriesService, CountriesService>();
             services.AddScoped<IStateService, StateService>();
             services.AddScoped<ICitiesRepository, CityRepository>();

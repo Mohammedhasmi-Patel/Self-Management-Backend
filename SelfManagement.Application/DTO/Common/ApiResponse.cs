@@ -8,7 +8,7 @@ namespace SelfManagement.Application.DTO.Common
         public T? Data { get; set; }
         public bool Success { get; set; }
 
-        public static ApiResponse<T> SuccessResponse(T data, string message = "Success")
+        public static ApiResponse<T> SuccessResponse(T? data, string message = "Success")
         {
             return new ApiResponse<T>()
             {
